@@ -1,7 +1,6 @@
 import pygame
 import random
 
-
 class Board:
     def __init__(self):
         # Grid is what is currently placed on the board and is not necessarily correct.
@@ -14,28 +13,17 @@ class Board:
                      [0, 0, 0, 0, 0, 0, 0, 0, 0],
                      [0, 0, 0, 0, 0, 0, 0, 0, 0],
                      [0, 0, 0, 0, 0, 0, 0, 0, 0]]
-
-        # Fixed grid is the initial numbers that are on the board and never changes unless the board is randomized.
         self.fixed_grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 0, 0, 0, 0]]
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
-        # Solved grid is the solution to the current board.
-        self.solved_grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 0, 0]]
+
 
     # The draw board function prints the board to the screen.
     def draw_board(self):
@@ -50,7 +38,12 @@ class Board:
             x_gap, y_gap, x_gap_interval, y_gap_interval, x_pos, y_pos = self.cursor_position()
 
             # Prints the highlighted square onto the screen.
-            pygame.draw.rect(screen, "lime", (x_gap, y_gap, x_gap_interval, y_gap_interval))
+            pygame.draw.rect(screen, "beige", (x_gap, 0, x_gap_interval, 900))
+            pygame.draw.rect(screen, "beige", (0, y_gap, 900, y_gap_interval))
+
+
+            pygame.draw.rect(screen, "cadetblue1", (x_gap, y_gap, x_gap_interval, y_gap_interval))
+
 
         # Prints the vertical lines between each 3x3 square on the board.
         for line in range(1, 4):
@@ -100,8 +93,12 @@ class Board:
             # Goes through each column on the board.
             for x_square in range(9):
                 # Prints the number to the screen if the position on the board is not zero.
+                if self.fixed_grid[y_square][x_square] != 0:
+                    colour = "black"
+                else:
+                    colour = "blue"
                 if self.grid[y_square][x_square] != 0:
-                    self.write_text(self.grid[y_square][x_square], text_font, "blue", ((x_square) * x_gap_interval) + (x_gap_interval / 2.5), ((y_square ) * y_gap_interval) + (y_gap_interval / 3))
+                    self.write_text(self.grid[y_square][x_square], text_font, colour, ((x_square) * x_gap_interval) + (x_gap_interval / 2.5), ((y_square ) * y_gap_interval) + (y_gap_interval / 3))
 
     # The cursor position function determines the position of the mouse on the board.
     def cursor_position(self):
@@ -157,7 +154,7 @@ class Board:
             # Checks if the number being placed is not on the fixed grid.
             if self.fixed_grid[y_pos][x_pos] == 0:
                 # Checks if the number is valid.
-                if self.is_valid(y_pos, x_pos, value, self.grid):
+                if (self.is_valid(y_pos, x_pos, value)) | (value == 0):
                     self.grid[y_pos][x_pos] = value
 
     # The clear function clears the board by making every value in the grid zero.
@@ -171,24 +168,65 @@ class Board:
                      [0, 0, 0, 0, 0, 0, 0, 0, 0],
                      [0, 0, 0, 0, 0, 0, 0, 0, 0],
                      [0, 0, 0, 0, 0, 0, 0, 0, 0]]
+        self.fixed_grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0]]
+
 
     # The random function randomized the board.
     def random(self):
-        remaining = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-        random.shuffle(remaining)
-        for i in range(len(remaining)):
-            col = random.randint(1, 8)
+        # Goes through each row.
+        for row in range(9):
+            # Goes through each column.
+            for col in range(9):
+                # Checks if the square is not solved.
+                if self.grid[row][col] == 0:
+                    numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+                    random.shuffle(numbers)
+                    # Checks each value.
+                    for val in numbers:
+                        # Checks if the value is valid.
+                        if self.is_valid(row, col, val):
+                            # Records the value to the square.
+                            self.grid[row][col] = val
+                            self.fixed_grid[row][col] = val
+                            # Checks if the value is in the final solution.
+                            if self.random():
+                                return True
+                            # Reverts the value back to 0 if it is incorrect.
+                            self.grid[row][col] = 0
+                            self.fixed_grid[row][col] = 0
+                    return False
+        return True
 
-            self.grid[i][col] = remaining[i]
-            self.fixed_grid[i][col] = remaining[i]
-            self.solved_grid[i][col] = remaining[i]
-            self.solve()
+    # The new game function clears and randomizes the board.
+    # Once randomized it takes away values from the board.
+    def new_game(self, remaining):
+        remaining = 81 - remaining
+        self.clear()
+        self.random()
+        while remaining > 0:
+            row = random.randint(0, 8)
+            col = random.randint(0, 8)
+            if self.grid[row][col] != 0:
+                self.grid[row][col] = 0
+                self.fixed_grid[row][col] = 0
+                remaining -= 1
+
+
+
 
     # The is valid function checks if the number being placed is valid on the specified board.
-    def is_valid(self, row, col, val, board_grid):
+    def is_valid(self, row, col, val):
         # Checks if the number is already placed and if so returns false.
         for i in range(9):
-            if (board_grid[i][col] == val) or (board_grid[row][i] == val):
+            if (self.grid[i][col] == val) or (self.grid[row][i] == val):
                 return False
 
         box_row = (row // 3) * 3
@@ -198,7 +236,7 @@ class Board:
         # in false being returned.
         for i in range(3):
             for j in range(3):
-                if board_grid[box_row + i][box_col + j] == val:
+                if self.grid[box_row + i][box_col + j] == val:
                     return False
 
         return True
@@ -210,36 +248,36 @@ class Board:
             # Goes through each column.
             for col in range(9):
                 # Checks if the square is not solved.
-                if self.solved_grid[row][col] == 0:
+                if self.grid[row][col] == 0:
                     # Checks each value.
                     for val in range(1, 10):
                         # Checks if the value is valid.
-                        if self.is_valid(row, col, val, self.solved_grid):
+                        if self.is_valid(row, col, val):
                             # Records the value to the square.
-                            self.solved_grid[row][col] = val
+                            self.grid[row][col] = val
                             # Checks if the value is in the final solution.
                             if self.solve():
                                 return True
                             # Reverts the value back to 0 if it is incorrect.
-                            self.solved_grid[row][col] = 0
+                            self.grid[row][col] = 0
                     return False
         return True
 
     # The show solution function makes the grid equal to the solved grid.
     def show_solution(self):
-        self.grid = self.solved_grid
+        self.solve()
 
 
 
 running = True
 pygame.init()
-x, y = 1000, 1000
-screen = pygame.display.set_mode((x + 100, y))
+x, y = 900, 900
+screen = pygame.display.set_mode((x, y))
 pygame.init()
 board = Board()
 
 while running:
-    screen.fill("cadetblue1")
+    screen.fill("white")
     for event in pygame.event.get():
 
         # Detected is the program is quit.
@@ -297,10 +335,17 @@ while running:
             if event.key == pygame.K_s:
                 board.show_solution()
 
-            # If the 'r' key is pressed clear and randomize the board.
-            if event.key == pygame.K_r:
-                board.clear()
-                board.random()
+            # If the 'e' key is pressed clear and randomize the board to easy difficulty.
+            if event.key == pygame.K_e:
+                board.new_game(40)
+
+            # If the 'm' key is pressed clear and randomize the board to medium difficulty.
+            if event.key == pygame.K_m:
+                board.new_game(30)
+
+            # If the 'h' key is pressed clear and randomize the board to hard difficulty.
+            if event.key == pygame.K_h:
+                board.new_game(20)
 
     # Refreshes the screen.
     board.draw_board()
