@@ -29,6 +29,7 @@ class Board:
     def draw_board(self):
         # Gap is the space between each square on the board.
         gap = x // 3
+
         # Current gap is gap that is currently being used and is needed because the gap changes.
         current_gap = gap
 
@@ -38,51 +39,56 @@ class Board:
             x_gap, y_gap, x_gap_interval, y_gap_interval, x_pos, y_pos = self.cursor_position()
 
             # Prints the highlighted square onto the screen.
-            pygame.draw.rect(screen, "beige", (x_gap, 0, x_gap_interval, 900))
-            pygame.draw.rect(screen, "beige", (0, y_gap, 900, y_gap_interval))
+            pygame.draw.rect(screen, "beige", (x_gap + 100, 0, x_gap_interval, 900))
+            pygame.draw.rect(screen, "beige", (100, y_gap, 900, y_gap_interval))
 
 
-            pygame.draw.rect(screen, "cadetblue1", (x_gap, y_gap, x_gap_interval, y_gap_interval))
+            pygame.draw.rect(screen, "cadetblue1", (x_gap + 100, y_gap, x_gap_interval, y_gap_interval))
 
+        pygame.draw.line(screen, "black", (100, 0), (100, y), 10)
 
         # Prints the vertical lines between each 3x3 square on the board.
         for line in range(1, 4):
-            pygame.draw.line(screen, "black", (current_gap, 0), (current_gap, y), 10)
+            pygame.draw.line(screen, "black", (current_gap + 100, 0), (current_gap + 100, y), 10)
             # Changes the current gap by a single gap to make the next vertical line to the right.
             current_gap += gap
 
         # Changes the gap and current gap to a new value
         gap = x // 9
+
         current_gap = gap
 
         # Prints the vertical lines between each square on the board.
         for line in range(1, 10):
-            pygame.draw.line(screen, "black", (current_gap, 0), (current_gap, y), 5)
+            pygame.draw.line(screen, "black", (current_gap + 100, 0), (current_gap + 100, y), 5)
             # Changes the current gap by a single gap to make the next vertical line to the right.
             current_gap += gap
 
         # Changes the gap and current gap to a new value
         gap = y // 3
+
         current_gap = gap
 
         # Prints the horizontal lines between each 3x3 square on the board.
         for line in range(1, 4):
-            pygame.draw.line(screen, "black", (0, current_gap), (y, current_gap), 10)
+            pygame.draw.line(screen, "black", (100, current_gap), (y + 100, current_gap), 10)
             # Changes the current gap by a single gap to make the next horizontal line below the last one.
             current_gap += gap
 
         # Changes the gap and current gap to a new value.
         gap = y // 9
+
         current_gap = gap
 
         # Prints the horizontal lines between each square on the board.
         for line in range(1, 10):
-            pygame.draw.line(screen, "black", (0, current_gap), (y, current_gap), 2)
+            pygame.draw.line(screen, "black", (100, current_gap), (y + 100, current_gap), 2)
             # Changes the current gap by a single gap to make the next horizontal line below the last one.
             current_gap += gap
 
         # Determines the x and y gap interval.
         x_gap_interval = x // 9
+
         y_gap_interval = y // 9
 
         # Determines the font used for the numbers on the board.
@@ -98,16 +104,16 @@ class Board:
                 else:
                     colour = "blue"
                 if self.grid[y_square][x_square] != 0:
-                    self.write_text(self.grid[y_square][x_square], text_font, colour, ((x_square) * x_gap_interval) + (x_gap_interval / 2.5), ((y_square ) * y_gap_interval) + (y_gap_interval / 3))
+                    self.write_text(self.grid[y_square][x_square], text_font, colour, ((x_square + 1) * x_gap_interval) + (x_gap_interval / 2.5), ((y_square ) * y_gap_interval) + (y_gap_interval / 3))
 
     # The cursor position function determines the position of the mouse on the board.
     def cursor_position(self):
-        x_gap = 0
+        x_gap = 100
         x_gap_interval = x // 9
         y_gap_interval = y // 9
 
         # Determines if the mouse is between the left and right hand side of the board.
-        if (pygame.mouse.get_pos()[0] > 0) & (pygame.mouse.get_pos()[0] < x):
+        if (pygame.mouse.get_pos()[0] > 100) & (pygame.mouse.get_pos()[0] < (x + 100)):
 
             # Determines if the mouse is between the top and bottom of the board.
             if (pygame.mouse.get_pos()[1] > 0) & (pygame.mouse.get_pos()[1] < y):
@@ -132,7 +138,7 @@ class Board:
                             y_pos = (y_gap // y_gap_interval)
                             x_pos = (x_gap // x_gap_interval)
 
-                            return x_gap, y_gap, x_gap_interval, y_gap_interval, x_pos, y_pos
+                            return x_gap - 100, y_gap, x_gap_interval, y_gap_interval, x_pos, y_pos
 
                     x_gap += x_gap_interval
 
@@ -152,10 +158,11 @@ class Board:
             # Records the position of the cursor into the following variables.
             x_gap, y_gap, x_gap_interval, y_gap_interval, x_pos, y_pos = self.cursor_position()
             # Checks if the number being placed is not on the fixed grid.
-            if self.fixed_grid[y_pos][x_pos] == 0:
+            print(x_pos)
+            if self.fixed_grid[y_pos][x_pos - 1] == 0:
                 # Checks if the number is valid.
-                if (self.is_valid(y_pos, x_pos, value)) | (value == 0):
-                    self.grid[y_pos][x_pos] = value
+                if (self.is_valid(y_pos, x_pos - 1, value)) | (value == 0):
+                    self.grid[y_pos][x_pos - 1] = value
 
     # The clear function clears the board by making every value in the grid zero.
     def clear(self):
@@ -272,7 +279,8 @@ class Board:
 running = True
 pygame.init()
 x, y = 900, 900
-screen = pygame.display.set_mode((x, y))
+screen = pygame.display.set_mode((x + 200, y + 200))
+pygame.display.set_caption("Sudoku")
 pygame.init()
 board = Board()
 
