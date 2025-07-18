@@ -1,6 +1,8 @@
 import pygame
 import random
 
+from pygame.examples.moveit import HEIGHT
+
 
 class Board:
     def __init__(self):
@@ -16,14 +18,14 @@ class Board:
                      [0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
         self.fixed_grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0]]
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
     # The draw board function prints the board to the screen.
     def draw_board(self):
@@ -42,8 +44,8 @@ class Board:
 
             value = self.grid[y_pos - 2][x_pos - 1]
             # Prints the highlighted square onto the screen.
-            pygame.draw.rect(screen, "beige", (x_gap + x_offset, y_offset, x_gap_interval, 900))
-            pygame.draw.rect(screen, "beige", (x_offset, y_gap + y_offset, 900, y_gap_interval))
+            pygame.draw.rect(screen, "beige", (x_gap + x_offset, y_offset, x_gap_interval, y))
+            pygame.draw.rect(screen, "beige", (x_offset, y_gap + y_offset, x, y_gap_interval))
 
         # Determines the x and y gap interval.
         x_gap_interval = x // 9
@@ -51,7 +53,7 @@ class Board:
         y_gap_interval = y // 9
 
         # Determines the font used for the numbers on the board.
-        text_font = pygame.font.SysFont("Arial", int(50))
+        text_font = pygame.font.SysFont("Arial", int(50 * scale))
         win_next_colour = False
         # Goes through each row on the board.
         for y_square in range(9):
@@ -67,7 +69,9 @@ class Board:
 
                 # If the user has completed a sudoku the tiles become green. It is in a checkered pattern.
                 if (y_square == y_pos - 2) & (x_square == x_pos - 1):
-                    pygame.draw.rect(screen, "cadetblue1", (((x_square * x_gap_interval) + x_offset), ((y_square * y_gap_interval) + y_offset), (x_gap_interval), (y_gap_interval)))
+                    pygame.draw.rect(screen, "cadetblue1", (
+                    ((x_square * x_gap_interval) + x_offset), ((y_square * y_gap_interval) + y_offset),
+                    (x_gap_interval), (y_gap_interval)))
                     if win_next_colour:
                         win_next_colour = False
                     else:
@@ -81,21 +85,28 @@ class Board:
                         colour = "green3"
                         win_next_colour = True
 
-                    pygame.draw.rect(screen, colour, (((x_square * x_gap_interval) + x_offset), ((y_square * y_gap_interval) + y_offset), (x_gap_interval), (y_gap_interval)))
+                    pygame.draw.rect(screen, colour, (
+                    ((x_square * x_gap_interval) + x_offset), ((y_square * y_gap_interval) + y_offset),
+                    (x_gap_interval), (y_gap_interval)))
                     colour = "black"
 
                 elif (self.grid[y_square][x_square] == value) & (value != 0):
-                    pygame.draw.rect(screen, "bisque2", (((x_square * x_gap_interval) + x_offset), ((y_square * y_gap_interval) + y_offset), (x_gap_interval), (y_gap_interval)))
+                    pygame.draw.rect(screen, "bisque2", (
+                    ((x_square * x_gap_interval) + x_offset), ((y_square * y_gap_interval) + y_offset),
+                    (x_gap_interval), (y_gap_interval)))
 
                 if self.grid[y_square][x_square] != 0:
-                    self.write_text(self.grid[y_square][x_square], text_font, colour, ((x_square + 1) * x_gap_interval) + (x_gap_interval / 2.5), ((y_square + 2) * y_gap_interval) + (y_gap_interval / 3))
+                    self.write_text(self.grid[y_square][x_square], text_font, colour,
+                                    ((x_square + 1) * x_gap_interval) + (x_gap_interval / 2.5),
+                                    ((y_square + 2) * y_gap_interval) + (y_gap_interval / 3))
 
         pygame.draw.line(screen, "black", (x_offset, y_offset), (x_offset, y + y_offset), 10)
         pygame.draw.line(screen, "black", (x_offset, y_offset), (x + x_offset, y_offset), 10)
 
         # Prints the vertical lines between each 3x3 square on the board.
         for line in range(1, 4):
-            pygame.draw.line(screen, "black", (current_gap + x_offset, y_offset), (current_gap + x_offset, y + y_offset), 10)
+            pygame.draw.line(screen, "black", (current_gap + x_offset, y_offset),
+                             (current_gap + x_offset, y + y_offset), 10)
             # Changes the current gap by a single gap to make the next vertical line to the right.
             current_gap += gap
 
@@ -105,7 +116,8 @@ class Board:
 
         # Prints the vertical lines between each square on the board.
         for line in range(1, 10):
-            pygame.draw.line(screen, "black", (current_gap + x_offset, y_offset), (current_gap + x_offset, y + y_offset), 5)
+            pygame.draw.line(screen, "black", (current_gap + x_offset, y_offset),
+                             (current_gap + x_offset, y + y_offset), 5)
             # Changes the current gap by a single gap to make the next vertical line to the right.
             current_gap += gap
 
@@ -116,7 +128,8 @@ class Board:
 
         # Prints the horizontal lines between each 3x3 square on the board.
         for line in range(1, 4):
-            pygame.draw.line(screen, "black", (x_offset, current_gap + y_offset), (x + x_offset, current_gap + y_offset), 10)
+            pygame.draw.line(screen, "black", (x_offset, current_gap + y_offset),
+                             (x + x_offset, current_gap + y_offset), 10)
             # Changes the current gap by a single gap to make the next horizontal line below the last one.
             current_gap += gap
 
@@ -127,7 +140,8 @@ class Board:
 
         # Prints the horizontal lines between each square on the board.
         for line in range(1, 10):
-            pygame.draw.line(screen, "black", (x_offset, current_gap + y_offset), (x + x_offset, current_gap + y_offset), 5)
+            pygame.draw.line(screen, "black", (x_offset, current_gap + y_offset),
+                             (x + x_offset, current_gap + y_offset), 5)
             # Changes the current gap by a single gap to make the next horizontal line below the last one.
             current_gap += gap
 
@@ -160,9 +174,8 @@ class Board:
                     if (pygame.mouse.get_pos()[0] > x_gap) & (pygame.mouse.get_pos()[0] < x_gap + x_gap_interval):
 
                         if (pygame.mouse.get_pos()[1] > y_gap) & (pygame.mouse.get_pos()[1] < y_gap + y_gap_interval):
-
-                            y_pos = (y_gap // y_gap_interval)
-                            x_pos = (x_gap // x_gap_interval)
+                            y_pos = int(y_gap // y_gap_interval)
+                            x_pos = int(x_gap // x_gap_interval)
 
                             return x_gap - x_offset, y_gap - y_offset, x_gap_interval, y_gap_interval, x_pos, y_pos
 
@@ -202,16 +215,16 @@ class Board:
                      [0, 0, 0, 0, 0, 0, 0, 0, 0],
                      [0, 0, 0, 0, 0, 0, 0, 0, 0],
                      [0, 0, 0, 0, 0, 0, 0, 0, 0]]
-        
+
         self.fixed_grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0]]
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
     # The random function randomized the board.
     def random(self):
@@ -309,15 +322,28 @@ class Board:
 
 running = True
 pygame.init()
+scale = 1
 x, y = 900, 900
 x_offset = 100
 y_offset = 200
-screen = pygame.display.set_mode((x + (x_offset * 2), y + (y_offset * 2)))
+
 pygame.display.set_caption("Sudoku")
 pygame.init()
 board = Board()
 board_colour = "white"
+info = pygame.display.Info()
+width = info.current_w
+height = info.current_h
 
+# Changes the scale until the application can fit on the screen.
+while (y + (y_offset * 2.5)) * scale >= height:
+    scale -= .1
+
+x *= scale
+y *= scale
+x_offset *= scale
+y_offset *= scale
+screen = pygame.display.set_mode((x + (x_offset * 2), y + (y_offset * 2)))
 while running:
     screen.fill(board_colour)
     for event in pygame.event.get():
