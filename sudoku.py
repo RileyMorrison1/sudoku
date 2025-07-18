@@ -1,9 +1,6 @@
 import pygame
 import random
 
-from pygame.examples.moveit import HEIGHT
-
-
 class Board:
     def __init__(self):
         # Grid is what is currently placed on the board and is not necessarily correct.
