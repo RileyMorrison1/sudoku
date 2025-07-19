@@ -14,6 +14,7 @@ class Board:
                      [0, 0, 0, 0, 0, 0, 0, 0, 0],
                      [0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
+        # Fixed grid is what was placed initially for the current game.
         self.fixed_grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0],
                            [0, 0, 0, 0, 0, 0, 0, 0, 0],
                            [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -23,6 +24,18 @@ class Board:
                            [0, 0, 0, 0, 0, 0, 0, 0, 0],
                            [0, 0, 0, 0, 0, 0, 0, 0, 0],
                            [0, 0, 0, 0, 0, 0, 0, 0, 0]]
+
+        # Difficulty variable keeps track of the current difficulty.
+        self.difficulty = "Sandbox"
+
+        # Mistakes variable keeps track of the number of mistakes.
+        self.mistakes = 0
+
+        # The button colour variables determine the colour of the buttons.
+        self.undo_button_colour = "azure3"
+        self.solve_button_colour = "azure3"
+        self.hint_button_colour = "azure3"
+        self.difficulty_button_colour = "azure3"
 
     # The draw board function prints the board to the screen.
     def draw_board(self):
@@ -141,6 +154,24 @@ class Board:
                              (x + x_offset, current_gap + y_offset), 5)
             # Changes the current gap by a single gap to make the next horizontal line below the last one.
             current_gap += gap
+        text_font = pygame.font.SysFont("Arial", int(35 * scale))
+        self.write_text("Difficulty", text_font, "black", x_offset, y_offset * .60)
+        self.write_text(self.difficulty, text_font, "black", x_offset, y_offset * .75)
+
+        self.write_text("Mistakes", text_font, "black", x_offset * 3, y_offset * .60)
+        self.write_text(f"{self.mistakes}/3", text_font, "black", x_offset * 3, y_offset * .75)
+
+        pygame.draw.rect(screen, self.undo_button_colour, (x_offset - (x_offset * .1), y + (y_offset * 1.3), 85 * scale, 40 * scale))
+        self.write_text("Clear", text_font, "black", x_offset, y + (y_offset * 1.3))
+
+        pygame.draw.rect(screen, self.solve_button_colour, (x_offset + (x / 5.5) - (x_offset * .1), y + (y_offset * 1.3), 90 * scale, 40 * scale))
+        self.write_text("Solve", text_font, "black", x_offset + (x / 5.5), y + (y_offset * 1.3))
+
+        pygame.draw.rect(screen, self.hint_button_colour, (x_offset + (x / 2.7) - (x_offset * .1), y + (y_offset * 1.3), 75 * scale, 40 * scale))
+        self.write_text("Hint", text_font, "black", x_offset + (x / 2.7), y + (y_offset * 1.3))
+
+        pygame.draw.rect(screen, self.difficulty_button_colour, (x_offset + (x * .77) - (x_offset * .1), y + (y_offset * 1.3), 230 * scale, 40 * scale))
+        self.write_text("Change Difficulty", text_font, "black", x_offset + (x * .77), y + (y_offset * 1.3))
 
     # The cursor position function determines the position of the mouse on the board.
     def cursor_position(self):
@@ -149,6 +180,29 @@ class Board:
         x_gap_interval = x // 9
         y_gap_interval = y // 9
 
+        if self.button_hover(x_offset - (x_offset * .1), y + (y_offset * 1.3), (x_offset - (x_offset * .1)) + (85 * scale), y + (y_offset * 1.3) + (40 * scale), self.clear):
+            self.undo_button_colour = "azure4"
+
+        else:
+            self.undo_button_colour = "azure3"
+
+        if self.button_hover(x_offset + (x / 5.5) - (x_offset * .1), y + (y_offset * 1.3), (x_offset + (x / 5.5) - (x_offset * .1)) + (90 * scale), (y + (y_offset * 1.3)) + (40 * scale), self.solve):
+            self.solve_button_colour = "azure4"
+
+        else:
+            self.solve_button_colour = "azure3"
+
+        if self.button_hover(x_offset + (x / 2.7) - (x_offset * .1), y + (y_offset * 1.3), x_offset + (x / 2.7) - (x_offset * .1) + (75 * scale), y + (y_offset * 1.3) + (40 * scale), self.clear):
+            self.hint_button_colour = "azure4"
+
+        else:
+            self.hint_button_colour = "azure3"
+
+        if self.button_hover(x_offset + (x * .77) - (x_offset * .1), y + (y_offset * 1.3), x_offset + (x * .77) - (x_offset * .1) + (230 * scale), y + (y_offset * 1.3) + (40 * scale), self.change_difficulty):
+            self.difficulty_button_colour = "azure4"
+
+        else:
+            self.difficulty_button_colour = "azure3"
         # Determines if the mouse is between the left and right hand side of the board.
         if (pygame.mouse.get_pos()[0] > x_offset) & (pygame.mouse.get_pos()[0] < (x + x_offset)):
 
@@ -179,6 +233,20 @@ class Board:
                     x_gap += x_gap_interval
 
                 x_gap += x_gap_interval
+
+        return False
+
+    # The button hover function checks if the mouse is over the button, and if the mouse has been clicked.
+    def button_hover(self, left, top, right, bottom, function):
+        # Determines if the mouse is between the left and right hand side of the board.
+        if (pygame.mouse.get_pos()[0] > left) & (pygame.mouse.get_pos()[0] < right):
+
+            # Determines if the mouse is between the top and bottom of the board.
+            if (pygame.mouse.get_pos()[1] > top) & (pygame.mouse.get_pos()[1] < bottom):
+                if (click):
+                    print("Button Clicked")
+                    function()
+                return True
 
         return False
 
@@ -223,6 +291,8 @@ class Board:
                            [0, 0, 0, 0, 0, 0, 0, 0, 0],
                            [0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
+        self.difficulty = "Sandbox"
+
     # The random function randomized the board.
     def random(self):
         # Goes through each row.
@@ -262,6 +332,24 @@ class Board:
                 self.grid[row][col] = 0
                 self.fixed_grid[row][col] = 0
                 remaining -= 1
+
+    # The change difficulty changes the difficulty based on what the difficulty is currently.
+    def change_difficulty(self):
+        if self.difficulty == "Sandbox":
+            self.new_game(40)
+            self.set_difficulty("Easy")
+
+        elif self.difficulty == "Easy":
+            self.new_game(30)
+            self.set_difficulty("Medium")
+
+        elif self.difficulty == "Medium":
+            self.new_game(20)
+            self.set_difficulty("Hard")
+
+        elif self.difficulty == "Hard":
+            self.clear()
+            self.set_difficulty("Sandbox")
 
     # The is valid function checks if the number being placed is valid on the specified board.
     def is_valid(self, row, col, val):
@@ -308,6 +396,7 @@ class Board:
     def show_solution(self):
         self.solve()
 
+    # The check win method checks if the current game has been won.
     def check_win(self):
         for col in range(0, 9):
             for row in range(0, 9):
@@ -315,6 +404,10 @@ class Board:
                     return False
 
         return True
+
+    # The set difficulty function sets the difficulty.
+    def set_difficulty(self, mode):
+        self.difficulty = mode
 
 
 running = True
@@ -335,13 +428,14 @@ height = info.current_h
 # Changes the scale until the application can fit on the screen.
 while (y + (y_offset * 2.5)) * scale >= height:
     scale -= .1
-
+click = False
 x *= scale
 y *= scale
 x_offset *= scale
 y_offset *= scale
 screen = pygame.display.set_mode((x + (x_offset * 2), y + (y_offset * 2)))
 while running:
+    click = False
     screen.fill(board_colour)
     for event in pygame.event.get():
 
@@ -349,6 +443,12 @@ while running:
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:
+                click = True
+
+
 
         # Detected if a key is pressed down.
         if event.type == pygame.KEYDOWN:
@@ -396,6 +496,7 @@ while running:
             # If the 'c' key is pressed clear the board.
             if event.key == pygame.K_c:
                 board.clear()
+                board.set_difficulty("Sandbox")
 
             # If the 's' key is pressed solve the current board.
             if event.key == pygame.K_s:
@@ -404,14 +505,17 @@ while running:
             # If the 'e' key is pressed clear and randomize the board to easy difficulty.
             if event.key == pygame.K_e:
                 board.new_game(40)
+                board.set_difficulty("Easy")
 
             # If the 'm' key is pressed clear and randomize the board to medium difficulty.
             if event.key == pygame.K_m:
                 board.new_game(30)
+                board.set_difficulty("Medium")
 
             # If the 'h' key is pressed clear and randomize the board to hard difficulty.
             if event.key == pygame.K_h:
                 board.new_game(20)
+                board.set_difficulty("Hard")
 
             # If the 'q' key is pressed the application is exited.
             if event.key == pygame.K_q:
