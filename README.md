@@ -7,6 +7,8 @@ This project is to create a sudoku application using python.
 
 # To-Do List
 - Improve UI
-- Add difficulties to the application
-- Add buttons to do essential functions
-- Add a win screen
+- Implement hints
+- Implement mistakes
+- Implement a timer
+- Implement a help button, that shows keybinding information
+
