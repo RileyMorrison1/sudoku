@@ -28,13 +28,9 @@ class Board:
         # Difficulty variable keeps track of the current difficulty.
         self.difficulty = "Sandbox"
 
-        # Mistakes variable keeps track of the number of mistakes.
-        self.mistakes = 0
-
         # The button colour variables determine the colour of the buttons.
         self.undo_button_colour = "azure3"
         self.solve_button_colour = "azure3"
-        self.hint_button_colour = "azure3"
         self.difficulty_button_colour = "azure3"
 
     # The draw board function prints the board to the screen.
@@ -53,10 +49,11 @@ class Board:
             x_gap, y_gap, x_gap_interval, y_gap_interval, x_pos, y_pos = self.cursor_position()
 
             value = self.grid[y_pos - 2][x_pos - 1]
+
             # Prints the highlighted square onto the screen.
             pygame.draw.rect(screen, "beige", (x_gap + x_offset, y_offset, x_gap_interval, y))
             pygame.draw.rect(screen, "beige", (x_offset, y_gap + y_offset, x, y_gap_interval))
-
+            
         # Determines the x and y gap interval.
         x_gap_interval = x // 9
 
@@ -158,17 +155,11 @@ class Board:
         self.write_text("Difficulty", text_font, "black", x_offset, y_offset * .60)
         self.write_text(self.difficulty, text_font, "black", x_offset, y_offset * .75)
 
-        self.write_text("Mistakes", text_font, "black", x_offset * 3, y_offset * .60)
-        self.write_text(f"{self.mistakes}/3", text_font, "black", x_offset * 3, y_offset * .75)
-
         pygame.draw.rect(screen, self.undo_button_colour, (x_offset - (x_offset * .1), y + (y_offset * 1.3), 85 * scale, 40 * scale))
         self.write_text("Clear", text_font, "black", x_offset, y + (y_offset * 1.3))
 
         pygame.draw.rect(screen, self.solve_button_colour, (x_offset + (x / 5.5) - (x_offset * .1), y + (y_offset * 1.3), 90 * scale, 40 * scale))
         self.write_text("Solve", text_font, "black", x_offset + (x / 5.5), y + (y_offset * 1.3))
-
-        pygame.draw.rect(screen, self.hint_button_colour, (x_offset + (x / 2.7) - (x_offset * .1), y + (y_offset * 1.3), 75 * scale, 40 * scale))
-        self.write_text("Hint", text_font, "black", x_offset + (x / 2.7), y + (y_offset * 1.3))
 
         pygame.draw.rect(screen, self.difficulty_button_colour, (x_offset + (x * .77) - (x_offset * .1), y + (y_offset * 1.3), 230 * scale, 40 * scale))
         self.write_text("Change Difficulty", text_font, "black", x_offset + (x * .77), y + (y_offset * 1.3))
@@ -243,8 +234,7 @@ class Board:
 
             # Determines if the mouse is between the top and bottom of the board.
             if (pygame.mouse.get_pos()[1] > top) & (pygame.mouse.get_pos()[1] < bottom):
-                if (click):
-                    print("Button Clicked")
+                if click:
                     function()
                 return True
 
@@ -447,8 +437,6 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 click = True
-
-
 
         # Detected if a key is pressed down.
         if event.type == pygame.KEYDOWN:
