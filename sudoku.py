@@ -84,7 +84,7 @@ class Board:
                 if (y_square == y_pos - 2) & (x_square == x_pos - 1):
                     pygame.draw.rect(screen, "cadetblue1", (
                         ((x_square * x_gap_interval) + x_offset), ((y_square * y_gap_interval) + y_offset),
-                        (x_gap_interval), (y_gap_interval)))
+                        x_gap_interval, y_gap_interval))
                     if win_next_colour:
                         win_next_colour = False
                     else:
@@ -100,18 +100,19 @@ class Board:
 
                     pygame.draw.rect(screen, colour, (
                         ((x_square * x_gap_interval) + x_offset), ((y_square * y_gap_interval) + y_offset),
-                        (x_gap_interval), (y_gap_interval)))
+                        x_gap_interval, y_gap_interval))
                     colour = "black"
 
                 elif (self.grid[y_square][x_square] == value) & (value != 0):
                     pygame.draw.rect(screen, "bisque2", (
                         ((x_square * x_gap_interval) + x_offset), ((y_square * y_gap_interval) + y_offset),
-                        (x_gap_interval), (y_gap_interval)))
+                        x_gap_interval, y_gap_interval))
 
+                # Writes the number of each square unless the value is zero.
                 if self.grid[y_square][x_square] != 0:
                     self.write_text(self.grid[y_square][x_square], text_font, colour,
-                                    ((x_square + 1) * x_gap_interval) + (x_gap_interval / 2.5),
-                                    ((y_square + 2) * y_gap_interval) + (y_gap_interval / 3))
+                                    ((x_square + 1) * (x_gap_interval - (x_gap_interval * .005))) + (x_gap_interval / 2.5),
+                                    ((y_square + 2) * (y_gap_interval - (y_gap_interval * .005)) + (y_gap_interval / 3)))
 
         pygame.draw.line(screen, "black", (x_offset, y_offset), (x_offset, y + y_offset), 10)
         pygame.draw.line(screen, "black", (x_offset, y_offset), (x + x_offset, y_offset), 10)
@@ -158,19 +159,30 @@ class Board:
             # Changes the current gap by a single gap to make the next horizontal line below the last one.
             current_gap += gap
         text_font = pygame.font.SysFont("Arial", int(35 * scale))
+
+        # Difficulty headers text.
         self.write_text("Difficulty", text_font, "black", x_offset, y_offset * .60)
         self.write_text(self.difficulty, text_font, "black", x_offset, y_offset * .75)
 
+        # Clear button box.
         pygame.draw.rect(screen, self.undo_button_colour,
-                         (x_offset - (x_offset * .1), y + (y_offset * 1.3), 85 * scale, 40 * scale))
+                         (x_offset - (x_offset * .1), y + (y_offset * 1.3), 100 * scale, 40 * scale))
+
+        # Clear button text.
         self.write_text("Clear", text_font, "black", x_offset, y + (y_offset * 1.3))
 
+        # Solve button box.
         pygame.draw.rect(screen, self.solve_button_colour,
-                         (x_offset + (x / 5.5) - (x_offset * .1), y + (y_offset * 1.3), 90 * scale, 40 * scale))
+                         (x_offset + (x / 5.5) - (x_offset * .1), y + (y_offset * 1.3), 100 * scale, 40 * scale))
+
+        # Solve button text.
         self.write_text("Solve", text_font, "black", x_offset + (x / 5.5), y + (y_offset * 1.3))
 
+        # Difficulty button box.
         pygame.draw.rect(screen, self.difficulty_button_colour,
-                         (x_offset + (x * .77) - (x_offset * .1), y + (y_offset * 1.3), 230 * scale, 40 * scale))
+                         (x_offset + (x * .77) - (x_offset * .1), y + (y_offset * 1.3), 270 * scale, 40 * scale))
+
+        # Difficulty button text.
         self.write_text("Change Difficulty", text_font, "black", x_offset + (x * .77), y + (y_offset * 1.3))
 
     # The cursor position function determines the position of the mouse on the board.
@@ -181,7 +193,7 @@ class Board:
         y_gap_interval = y // 9
 
         if self.button_hover(x_offset - (x_offset * .1), y + (y_offset * 1.3),
-                             (x_offset - (x_offset * .1)) + (85 * scale), y + (y_offset * 1.3) + (40 * scale),
+                             (x_offset - (x_offset * .1)) + (100 * scale), y + (y_offset * 1.3) + (40 * scale),
                              self.clear):
             self.undo_button_colour = "azure4"
 
@@ -189,7 +201,7 @@ class Board:
             self.undo_button_colour = "azure3"
 
         if self.button_hover(x_offset + (x / 5.5) - (x_offset * .1), y + (y_offset * 1.3),
-                             (x_offset + (x / 5.5) - (x_offset * .1)) + (90 * scale),
+                             (x_offset + (x / 5.5) - (x_offset * .1)) + (100 * scale),
                              (y + (y_offset * 1.3)) + (40 * scale), self.solve):
             self.solve_button_colour = "azure4"
 
@@ -197,7 +209,7 @@ class Board:
             self.solve_button_colour = "azure3"
 
         if self.button_hover(x_offset + (x * .77) - (x_offset * .1), y + (y_offset * 1.3),
-                             x_offset + (x * .77) - (x_offset * .1) + (230 * scale),
+                             x_offset + (x * .77) - (x_offset * .1) + (270 * scale),
                              y + (y_offset * 1.3) + (40 * scale), self.change_difficulty):
             self.difficulty_button_colour = "azure4"
 
